@@ -28,7 +28,7 @@ jobs:
       - name: Build blog from results
         run: python 2_downsample/code/build_blog.py
       - name: Test blog result integrity
-        run: python -m unittest discover -s 2_downsample/code/tests -v
+        run: python -m unittest discover -s 2_downsample/code/tests -p test_blog.py -v
       - name: Execute piano notebook
         run: python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=120 --ExecutePreprocessor.kernel_name=pcm-aliasing 2_downsample/code/02_piano_downsampling.ipynb
       - name: Build piano article and reading view

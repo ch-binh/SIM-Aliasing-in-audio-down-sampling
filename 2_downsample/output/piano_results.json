@@ -28,7 +28,7 @@
     },
     "attribution": {
       "path": "input/piano_attribution.md",
-      "sha256": "941fee275f720bdb96d985f67ae164e28a2982d16b554c26d4922617046db62a"
+      "sha256": "ba7da33965baeab2a0d2e9aad816964d009f82894cef9cd789dd27188b1eff9e"
     },
     "original_audio": {
       "path": "input/piano_48khz.wav",

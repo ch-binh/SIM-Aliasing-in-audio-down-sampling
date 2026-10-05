@@ -62,6 +62,12 @@ class PianoBlogTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Notebook code changed"):
             builder.build_blog(self.root)
 
+    def test_changed_attribution_rejected(self):
+        path = self.root/self.manifest["artifacts"]["attribution"]["path"]
+        path.write_text("changed source attribution", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Artifact changed: attribution"):
+            builder.build_blog(self.root)
+
     def test_path_outside_experiment_rejected(self):
         self.manifest["artifacts"]["original_audio"]["path"] = "../outside.wav"
         (self.root/"output"/"piano_results.json").write_text(json.dumps(self.manifest))
