@@ -1,0 +1,21 @@
+{
+  "input_rate_hz": 64000,
+  "output_rate_hz": 32000,
+  "tones_hz": [
+    3000,
+    10000,
+    31000
+  ],
+  "fir_taps": 129,
+  "nominal_cutoff_hz": 14000,
+  "group_delay_ms": 1.0,
+  "filter_gains_db": {
+    "3000": -0.00022631327268544265,
+    "10000": -0.004414017354766854,
+    "31000": -69.73516844218543
+  },
+  "original_1khz_amplitude_fs": 4.066886468621078e-07,
+  "unfiltered_1khz_amplitude_fs": 0.12000225383829559,
+  "filtered_1khz_amplitude_fs": 4.093478834147897e-05,
+  "alias_reduction_db": 69.34193707454395
+}

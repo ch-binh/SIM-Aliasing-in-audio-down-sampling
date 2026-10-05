@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCM Aliasing Lab — 64 to 32 kHz</title>
+  <style>
+    body { font: 17px/1.55 system-ui, sans-serif; max-width: 1000px; margin: 32px auto; padding: 0 20px; background: #f8fafc; color: #172033; }
+    section { background: white; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0; border-radius: 12px; }
+    img, audio { width: 100%; } img { height: auto; }
+    strong { color: #b91c1c; } code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>PCM Aliasing Lab</h1>
+  <p>Keep every other sample. Replay at half the sample rate. Hear a new tone.</p>
+  <p>A synthetic 4-second, mono PCM16 recording contains 3, 10 and 31 kHz tones,
+    each at 0.12 full-scale amplitude. The experiment applies <code>x[::2]</code>
+    without an anti-alias filter, then saves the result at 32 kHz.</p>
+  <p>Start with low playback volume. Both files have the same duration and amplitude scale.</p>
+  <section>
+    <h2>Before · 64 kHz</h2>
+    <p>FFT peaks: 3, 10 and <strong>31 kHz</strong>.</p>
+    <audio controls preload="metadata" src="../input/before_64khz.wav">Your browser does not support audio playback.</audio>
+    <img src="before.png" alt="Original PCM waveform and FFT with peaks at 3, 10 and 31 kHz">
+  </section>
+  <section>
+    <h2>After · 32 kHz</h2>
+    <p>FFT peaks: <strong>1 kHz</strong>, 3 and 10 kHz. The original 31 kHz tone
+      exceeds the new 16 kHz Nyquist limit and aliases to |31 − 32| = 1 kHz.</p>
+    <audio controls preload="metadata" src="after_32khz_unfiltered.wav">Your browser does not support audio playback.</audio>
+    <img src="after.png" alt="Downsampled PCM waveform and FFT with peaks at 1, 3 and 10 kHz">
+  </section>
+  <section>
+    <h2>What this demonstrates for embedded firmware</h2>
+    <p>Samples can arrive without bit errors and still represent the wrong frequency
+      after firmware discards data. To reduce a 64 kHz PCM stream to 32 kHz,
+      attenuate frequencies above the new Nyquist limit before keeping alternate samples.
+      This experiment intentionally omits that filter.</p>
+    <p>FFT amplitudes are calculated from the saved WAV files, using their middle 2 seconds.
+      The waveform is a 1 ms view with sample markers; connecting lines are a visual aid.</p>
+    <p>Browser/OS playback may resample audio, and ordinary speakers cannot reproduce
+      31 kHz faithfully. The WAV and FFT establish its presence; listen for the new
+      1 kHz component in the second recording.</p>
+    <p><a href="verification.json">View numerical verification</a></p>
+  </section>
+  <script>
+    for (const player of document.querySelectorAll('audio')) {
+      player.volume = 0.25;
+      player.addEventListener('play', () => {
+        for (const other of document.querySelectorAll('audio')) {
+          if (other !== player) other.pause();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

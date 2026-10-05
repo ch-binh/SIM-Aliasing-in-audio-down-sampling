@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One piano key, fewer samples</title>
+<style>
+:root{color-scheme:light;--ink:#243a32;--muted:#53665e;--paper:#f5f2e9;--line:#d9dfd3}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.7 system-ui,sans-serif}
+main{max-width:880px;margin:auto;padding:48px 24px}h1,h2{font-family:Georgia,serif;line-height:1.15}h1{font-size:clamp(38px,6vw,64px);margin:22px 0}h2{font-size:32px}
+a{color:#235e46}section{margin:58px 0}.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.lead{font-size:22px;color:var(--muted)}.card{background:#fffdf7;border:1px solid var(--line);border-radius:16px;padding:22px;margin:22px 0}
+audio{display:block;width:100%;margin-top:15px}img{display:block;width:100%;height:auto;border-radius:10px}
+figure{margin:28px 0}figcaption,.meta,footer{font-size:15px;color:var(--muted)}.meta{display:block}pre{overflow:auto;padding:18px;background:#243a32;color:#f7f5ed;border-radius:10px;font-size:14px}
+details{padding:18px;border:1px solid var(--line);border-radius:12px}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding-top:24px}
+</style></head><body><main>
+<a href="blog.html">← The three-tone experiment</a>
+<header><p class="eyebrow">DSP for embedded developers · a real-world companion</p>
+<h1>One piano key.<br>Fewer samples.<br>A different sound?</h1>
+<p class="lead">Have you ever wanted to shrink an audio recording to save storage, and thought of simply skipping samples? Let's try that shortcut on a real piano note, see where aliasing can occur, and low-pass the signal before downsampling.</p></header>
+<section><p class="eyebrow">01 · Listen first</p><h2>A real piano note, not a test tone</h2>
+<p>This is a sampled A6 piano note from the University of Iowa collection, distributed by Pimoroni. No extra frequencies were added. The note has a fundamental near <strong>1772 Hz</strong>, higher harmonics, an attack and a decay.</p>
+<div class="card"><strong>Working input · 48 kHz</strong><span class="meta">Duration: 1.0301 s. Start at a comfortable volume.</span><audio controls preload="metadata" src="../input/piano_48khz.wav"></audio></div>
+<p>The downloaded sample is stereo at 44.1 kHz. The notebook makes it mono and uses SciPy's filtered resampling to prepare a 48 kHz working input. That safe preparation is separate from the sample-dropping experiment.</p></section>
+<section><p class="eyebrow">02 · Drop samples</p><h2>Keep one. Skip five.</h2>
+<p>We retain every sixth sample and play the result at 8 kHz. The duration is unchanged. Frequencies below 4 kHz still fit, but higher components can fold back into that band. Correct playback speed alone does not prevent this.</p>
+<div class="card"><strong>Sample dropping only · 8 kHz</strong><span class="meta">Compare the attack and tone colour, not the playback speed.</span><audio controls preload="metadata" src="piano_8khz_unfiltered.wav"></audio></div>
+<p>We chose a high piano note to inspect its upper harmonics. This particular sample has very little energy above 4 kHz, so the listening difference may be subtle. Use the three-tone experiment for a stronger controlled demonstration.</p></section>
+<section><p class="eyebrow">03 · Observe the input</p><h2>The harmonics cross the new limit</h2>
+<figure><img src="piano_original.png" alt="Piano input waveform and FFT with frequencies above the new 4 kHz limit shaded"><figcaption>Across the analyzed 0.05–0.55 s section, 0.0093% of windowed spectral energy is above the new 4 kHz limit. This is an energy estimate, not a loudness score.</figcaption></figure>
+<p>The FFT comes from the saved WAV, not from a microphone listening to the speakers. A Hann window helps analyze this short, decaying sound:</p>
+<pre><code>np.fft.rfft(segment * np.hanning(len(segment)))</code></pre></section>
+<section><p class="eyebrow">04 · Observe the output</p><h2>High harmonics can become lower frequencies</h2>
+<figure><img src="piano_unfiltered.png" alt="Unfiltered 8 kHz piano waveform and FFT"><figcaption>The new spectrum ends at 4 kHz. That does not mean the original high-frequency content disappeared safely.</figcaption></figure>
+<p>A prominent out-of-band peak near <strong>5450 Hz</strong> maps to approximately <strong>2550 Hz</strong> at 8 kHz. In a real piano recording, that folded component may overlap existing harmonics. The low-rate spectrum alone cannot reveal where it came from.</p></section>
+<section><p class="eyebrow">05 · Try the fix</p><h2>Decide the bandwidth before discarding data</h2>
+<p>We low-pass the 48 kHz input before keeping every sixth sample. A 3.4 kHz nominal cutoff leaves room for the filter to roll off before 4 kHz. The notebook applies its FIR coefficients using convolution:</p>
+<pre><code>np.convolve(samples, coefficients, mode="same")</code></pre>
+<div class="card"><strong>Low-pass, then sample dropping · 8 kHz</strong><span class="meta">A band-limited version of the note, not a full-bandwidth restoration.</span><audio controls preload="metadata" src="piano_8khz_filtered.wav"></audio></div>
+<figure><img src="piano_filtered.png" alt="Filtered 8 kHz piano waveform and FFT"><figcaption>Filtering suppresses the high-frequency content before it can fold.</figcaption></figure>
+<figure><img src="piano_comparison.png" alt="Overlay of original, unfiltered and filtered piano spectra on a shared scale"><figcaption>The same analysis window and dBFS scale are used for all three signals.</figcaption></figure>
+<details><summary>What exactly did we measure?</summary><p>The 513-tap filter reduces analyzed energy above 4 kHz by <strong>110.40 dB before decimation</strong>. This is not an isolated alias-peak suppression measurement. The three-tone experiment provides that cleaner controlled test.</p>
+<p>All WAVs use one shared gain; no clip is independently normalized. Centered convolution compensates delay for this offline comparison. A causal MCU implementation needs filter state and adds about 5.33 ms of delay. Measurements exclude padded endpoints.</p></details></section>
+<section><p class="eyebrow">06 · The takeaway</p><h2>Preserve pitch. Control timbre.</h2>
+<p>The fundamental survives both paths, but upper harmonics determine much of the piano's character. Filtering deliberately removes brightness above the available bandwidth. Sample dropping without filtering can instead introduce false lower-frequency content.</p>
+<p>Not every audible difference is aliasing: bandwidth reduction itself changes the sound. Browser, DAC, speakers and hearing also affect the comparison. Listen at the same volume and use the saved-data FFTs as the objective reference.</p></section>
+<section><p class="eyebrow">Future discovery</p><h2>Could firmware spot risky bandwidth?</h2>
+<p>This notebook implements a first check: estimate energy above the target Nyquist limit while the high-rate samples are still available. Next, use short-time FFTs to catch the attack, test different notes and noise floors, and measure the CPU cost.</p>
+<p>A detector does not replace an anti-alias filter. Once frequencies have folded into an 8 kHz stream, its FFT cannot uniquely reconstruct their original frequencies.</p></section>
+<footer><p><a href="../code/02_piano_downsampling.ipynb">Executed notebook and full code</a> · <a href="piano_notebook_reference.html">Notebook reading view</a> · <a href="piano_results.json">Verified measurements</a> · <a href="../input/piano_attribution.md">Source attribution</a> · <a href="../input/piano_source_LICENSE.txt">Source license</a></p>
+<p>Source: Lawrence Fritts, <a href="https://theremin.music.uiowa.edu/MIS.html">University of Iowa Musical Instrument Samples</a>, via <a href="https://github.com/pimoroni/Piano-HAT/tree/master/examples/sounds/piano">Pimoroni Piano-HAT</a>. Preparation: <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample_poly.html">SciPy resample_poly</a>. This is an offline DSP experiment using recorded piano, not an MCU benchmark.</p></footer>
+</main><script>for(const a of document.querySelectorAll('audio')){a.volume=.35;a.addEventListener('play',()=>{for(const b of document.querySelectorAll('audio'))if(a!==b)b.pause()})}</script></body></html>

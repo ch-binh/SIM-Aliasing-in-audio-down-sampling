@@ -1,0 +1,24 @@
+{
+  "before": {
+    "sample_rate_hz": 64000,
+    "samples": 256000,
+    "duration_seconds": 4.0,
+    "fft_peaks_hz": [
+      3000.0,
+      10000.0,
+      31000.0
+    ],
+    "amplitude_at_1khz_fs": 4.066886468621078e-07
+  },
+  "after": {
+    "sample_rate_hz": 32000,
+    "samples": 128000,
+    "duration_seconds": 4.0,
+    "fft_peaks_hz": [
+      1000.0,
+      3000.0,
+      10000.0
+    ],
+    "amplitude_at_1khz_fs": 0.12000225383829559
+  }
+}

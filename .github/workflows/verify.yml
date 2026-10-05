@@ -1,0 +1,39 @@
+name: Verify PCM experiment
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r 2_downsample/code/requirements.txt
+      - name: Test signal processing and WAV output
+        run: python -m unittest discover -s tests -v
+        working-directory: 1_demo_audio/code
+      - name: Regenerate and verify demonstration
+        run: python 1_demo_audio/code/run_demo.py
+      - name: Register notebook kernel
+        run: python -m ipykernel install --user --name pcm-aliasing
+      - name: Execute notebook
+        run: python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=120 --ExecutePreprocessor.kernel_name=pcm-aliasing 2_downsample/code/01_pcm_aliasing_walkthrough.ipynb
+      - name: Build blog from results
+        run: python 2_downsample/code/build_blog.py
+      - name: Test blog result integrity
+        run: python -m unittest discover -s 2_downsample/code/tests -v
+      - name: Execute piano notebook
+        run: python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=120 --ExecutePreprocessor.kernel_name=pcm-aliasing 2_downsample/code/02_piano_downsampling.ipynb
+      - name: Build piano article and reading view
+        run: |
+          python 2_downsample/code/build_piano_blog.py
+          python -m jupyter nbconvert --to html 2_downsample/code/02_piano_downsampling.ipynb --output piano_notebook_reference --output-dir 2_downsample/output
+      - name: Recheck both article builders
+        run: python -m unittest discover -s 2_downsample/code/tests -v

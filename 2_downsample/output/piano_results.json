@@ -1,0 +1,62 @@
+{
+  "verified": true,
+  "measurements": {
+    "source_rate_hz": 44100,
+    "input_rate_hz": 48000,
+    "output_rate_hz": 8000,
+    "duration_s": 1.030125,
+    "shared_gain": 5.254994560347794,
+    "fundamental_hz": 1772.0,
+    "out_of_band_energy_percent": 0.009317409083594479,
+    "pre_decimation_reduction_db": 110.40459848366402,
+    "strongest_out_of_band_hz": 5450.0,
+    "predicted_folded_hz": 2550.0,
+    "output_difference_rms_fs": 0.002001567115582441,
+    "fir_taps": 513,
+    "cutoff_hz": 3400,
+    "causal_delay_ms": 5.333333333333333
+  },
+  "source_code_sha256": "9dcbee216dc639e8984acfbdeb7042c584b9e6ae4f6fd6fc7f1d5f65e39c0b77",
+  "artifacts": {
+    "source_audio": {
+      "path": "input/piano_A6_source.wav",
+      "sha256": "a0073f225a9d1958cbe52f952d4be02e6986e98a37c281542065cea1c47a60c2"
+    },
+    "source_license": {
+      "path": "input/piano_source_LICENSE.txt",
+      "sha256": "6a67e82c513b1f1ef500ecbbdf194465e86ec3b98e2853f456805a037569efc2"
+    },
+    "attribution": {
+      "path": "input/piano_attribution.md",
+      "sha256": "941fee275f720bdb96d985f67ae164e28a2982d16b554c26d4922617046db62a"
+    },
+    "original_audio": {
+      "path": "input/piano_48khz.wav",
+      "sha256": "523348e821892c56a1defcb63fea7d2245a9d39ec008951c134c02bf38dda9a7"
+    },
+    "unfiltered_audio": {
+      "path": "output/piano_8khz_unfiltered.wav",
+      "sha256": "ed06756469586f3a5f30cd2404673a1db691b924888ca687bfbf08f0c7b9e83b"
+    },
+    "filtered_audio": {
+      "path": "output/piano_8khz_filtered.wav",
+      "sha256": "840794be77a02259106986801351514a51429bb14c4f218c5aa467d839debb22"
+    },
+    "original_plot": {
+      "path": "output/piano_original.png",
+      "sha256": "400fdcd93ea63d15d89980ea8edf065eb94f27dea5edbcfcda6cfe47d335dcd9"
+    },
+    "unfiltered_plot": {
+      "path": "output/piano_unfiltered.png",
+      "sha256": "b57043a558a9463d14de7275a99daf626b626f51b5299822543a5175da55e9d2"
+    },
+    "filtered_plot": {
+      "path": "output/piano_filtered.png",
+      "sha256": "9f5ccd79f4bb08fecc64cff25fdc1bdf3f627ac2b6070498204beca09e3e1c5e"
+    },
+    "comparison_plot": {
+      "path": "output/piano_comparison.png",
+      "sha256": "3fc8137cefccbe0ac0f83e730f7a731ea7d6617a34cbfff25c1a058c3ee5d7ab"
+    }
+  }
+}

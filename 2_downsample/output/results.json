@@ -1,0 +1,79 @@
+{
+  "verified": true,
+  "source_code_sha256": "bc6f81d2a6540193b8c84a5ad7bae1848a603b1e3dfe82559a91d2b107c4e309",
+  "measurements": {
+    "input_rate_hz": 64000,
+    "output_rate_hz": 32000,
+    "tones_hz": [
+      3000,
+      10000,
+      31000
+    ],
+    "fir_taps": 129,
+    "nominal_cutoff_hz": 14000,
+    "group_delay_ms": 1.0,
+    "filter_gains_db": {
+      "3000": -0.00022631327268544265,
+      "10000": -0.004414017354766854,
+      "31000": -69.73516844218543
+    },
+    "original_1khz_amplitude_fs": 4.066886468621078e-07,
+    "unfiltered_1khz_amplitude_fs": 0.12000225383829559,
+    "filtered_1khz_amplitude_fs": 4.093478834147897e-05,
+    "alias_reduction_db": 69.34193707454395
+  },
+  "artifacts": {
+    "original_audio": {
+      "path": "input/before_64khz.wav",
+      "sha256": "8d1298ebec577590a9db050fff48b7effcaffd2dbb66b3ebfd2062801d12b1fb"
+    },
+    "unfiltered_audio": {
+      "path": "output/after_32khz_unfiltered.wav",
+      "sha256": "1751679a72649f19ea195215cd771be1871bb58613f36edf1da7d3b59f295805"
+    },
+    "filtered_audio": {
+      "path": "output/after_32khz_filtered.wav",
+      "sha256": "0fb9cd50b15777594207883799eb9cc43a078be4e360ff814b25c11d470450ea"
+    },
+    "original_plot": {
+      "path": "output/notebook_original.png",
+      "sha256": "a7728c863d6c5e7f8dc9987a0adb36ec6ac043147b0be6d3cf266d037cd2f81d"
+    },
+    "unfiltered_plot": {
+      "path": "output/notebook_unfiltered.png",
+      "sha256": "df48ec4a208f4c2d7b93732502bb1d54747d309a6b285d1fa707f5a398913b77"
+    },
+    "filtered_plot": {
+      "path": "output/notebook_filtered.png",
+      "sha256": "79c96587356e0b339fed2baa8c4d354c216223c6dffd4dafdd13a1d2548f6196"
+    },
+    "filter_response": {
+      "path": "output/notebook_filter_response.png",
+      "sha256": "f6a19295746a322ea59c7f180530434207a123e27e1296b05472d36803dc62fb"
+    },
+    "original_waveform": {
+      "path": "output/notebook_original_waveform.png",
+      "sha256": "b1e954b3da984541551ad0ca8493871cce07e8151c0631fa4deaccf41e3e9732"
+    },
+    "unfiltered_waveform": {
+      "path": "output/notebook_unfiltered_waveform.png",
+      "sha256": "2c528b4123707cab1219b1e5dc1836e55c26461aa9fb1ee0c31be34e2ebd3c26"
+    },
+    "filtered_waveform": {
+      "path": "output/notebook_filtered_waveform.png",
+      "sha256": "3c36db6307de4cc32475602d97163472e57ffe748a5761d9b2c3ea8af83e2491"
+    },
+    "original_fft": {
+      "path": "output/notebook_original_fft.png",
+      "sha256": "e06b839e551a659a33d82aefb0be8799cd39dd6eefe57020627c943143ef6585"
+    },
+    "unfiltered_fft": {
+      "path": "output/notebook_unfiltered_fft.png",
+      "sha256": "1565505ea3a32ba465bea5ed046389e8dac79c3adab420f35b5e24bf857bd215"
+    },
+    "filtered_fft": {
+      "path": "output/notebook_filtered_fft.png",
+      "sha256": "db36292e670f448d72d56a7847cb05d3c789a4c22e516affba5e100f9692c176"
+    }
+  }
+}
